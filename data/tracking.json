@@ -1,0 +1,59 @@
+{
+  "trackingData": [
+    {
+      "trackingId": "TRKTRDBFJZB3",
+      "origin": "usa",
+      "destination": "uk",
+      "status": "Delivered",
+      "location": "uk",
+      "estimatedDelivery": "2025-04-23",
+      "history": [
+        {
+          "date": "2025-04-19",
+          "status": "Delivered",
+          "location": "uk"
+        },
+        {
+          "date": "2025-04-19",
+          "status": "Out for Delivery",
+          "location": "london"
+        },
+        {
+          "date": "2025-04-19",
+          "status": "In Transit",
+          "location": "korea"
+        },
+        {
+          "date": "2025-04-19",
+          "status": "Package Received",
+          "location": "dubai"
+        }
+      ]
+    },
+    {
+      "trackingId": "TRK14B8GPCK5",
+      "origin": "usa",
+      "destination": "brazil",
+      "status": "Delivered",
+      "location": "france",
+      "estimatedDelivery": "2025-04-10",
+      "history": [
+        {
+          "date": "2025-04-19",
+          "status": "Delivered",
+          "location": "france"
+        },
+        {
+          "date": "2025-04-19",
+          "status": "Out for Delivery",
+          "location": "miami"
+        },
+        {
+          "date": "2025-04-19",
+          "status": "In Transit",
+          "location": "korea"
+        }
+      ]
+    }
+  ]
+}
