@@ -11,11 +11,11 @@ const nextConfig = {
         fs: false,
         path: false,
         os: false,
-        crypto: false,
       };
     }
     return config;
   },
+  transpilePackages: ['leaflet', 'react-leaflet'],
 }
 
 module.exports = nextConfig 

@@ -33,9 +33,11 @@ function SetBounds({ markers }) {
         const map = useMap();
         useEffect(() => {
           if (markers.length > 0 && map) {
-            const L = require('leaflet');
-            const bounds = L.latLngBounds(markers.map(marker => marker.position));
-            map.fitBounds(bounds, { padding: [50, 50] });
+            const L = window.L;
+            if (L) {
+              const bounds = L.latLngBounds(markers.map(marker => marker.position));
+              map.fitBounds(bounds, { padding: [50, 50] });
+            }
           }
         }, [markers, map]);
         return null;
@@ -123,24 +125,11 @@ const getCoordinates = async (location) => {
 const TrackingMap = ({ history }) => {
   const [markers, setMarkers] = useState([]);
   const [isClient, setIsClient] = useState(false);
-  const [leaflet, setLeaflet] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     setIsClient(true);
-    if (typeof window !== 'undefined') {
-      import('leaflet').then(L => {
-        setLeaflet(L);
-        // Fix for Leaflet marker icons
-        delete L.Icon.Default.prototype._getIconUrl;
-        L.Icon.Default.mergeOptions({
-          iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-          iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-        });
-      });
-    }
   }, []);
 
   useEffect(() => {
@@ -219,7 +208,7 @@ const TrackingMap = ({ history }) => {
     }
   };
 
-  if (!isClient || !leaflet) {
+  if (!isClient) {
     return (
       <div className={styles.mapContainer}>
         <div className={styles.loading}>Loading map...</div>
@@ -262,7 +251,7 @@ const TrackingMap = ({ history }) => {
             <Marker
               key={index}
               position={marker.position}
-              icon={leaflet.divIcon({
+              icon={window.L.divIcon({
                 className: 'custom-div-icon',
                 html: `
                   <div style="
