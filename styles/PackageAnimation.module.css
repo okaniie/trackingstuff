@@ -9,9 +9,10 @@
 
 .trackingLine {
   position: relative;
-  height: 2px;
+  height: 4px;
   background-color: #eaeaea;
   margin: 60px 0;
+  border-radius: 2px;
 }
 
 .checkpoint {
@@ -23,23 +24,26 @@
   align-items: center;
 }
 
-.checkpoint:nth-child(1) { left: 0%; }
-.checkpoint:nth-child(2) { left: 33.33%; }
-.checkpoint:nth-child(3) { left: 66.66%; }
-.checkpoint:nth-child(4) { left: 100%; }
+.checkpoint:nth-child(1) { left: 0%; }    /* Package Received */
+.checkpoint:nth-child(2) { left: 20%; }   /* Processing */
+.checkpoint:nth-child(3) { left: 40%; }   /* In Transit */
+.checkpoint:nth-child(4) { left: 60%; }   /* Out for Delivery */
+.checkpoint:nth-child(5) { left: 100%; }  /* Delivered */
 
 .checkpointDot {
-  width: 12px;
-  height: 12px;
+  width: 20px;
+  height: 20px;
   background-color: #eaeaea;
   border-radius: 50%;
-  border: 2px solid white;
+  border: 3px solid white;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 }
 
 .checkpointDot.active {
-  background-color: #000;
-  transform: scale(1);
+  transform: scale(1.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .checkpointInfo {
@@ -47,31 +51,42 @@
   top: -40px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: transparent;
-  padding: 8px 0;
-  min-width: 120px;
+  background-color: white;
+  padding: 12px 16px;
+  min-width: 180px;
   text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #eaeaea;
+  z-index: 3;
 }
 
 .location {
-  font-weight: 400;
+  font-weight: 600;
   color: #000;
   font-size: 0.875rem;
   margin-bottom: 4px;
 }
 
 .date {
-  color: #999;
+  color: #666;
   font-size: 0.75rem;
-  margin-top: 0;
+  margin: 4px 0;
+}
+
+.status {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 4px;
 }
 
 .progressLine {
   position: absolute;
   height: 100%;
-  background-color: #000;
   top: 0;
   left: 0;
+  border-radius: 2px;
+  transition: background-color 0.3s ease;
 }
 
 .package {
@@ -79,9 +94,340 @@
   top: 50%;
   left: 0;
   transform: translate(-50%, -50%);
-  font-size: 24px;
+  font-size: 32px;
   background-color: white;
-  padding: 8px;
-  border-radius: 0;
+  padding: 12px;
+  border-radius: 8px;
   z-index: 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #eaeaea;
+}
+
+.currentStatus {
+  text-align: left;
+  margin-top: 2rem;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eaeaea;
+}
+
+.statusHeader {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statusIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.statusInfo {
+  flex: 1;
+}
+
+.statusInfo h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  transition: color 0.3s ease;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+}
+
+.locationIcon {
+  font-size: 1.2rem;
+}
+
+.progressContainer {
+  margin: 2rem 0;
+}
+
+.progressBar {
+  position: relative;
+  height: 8px;
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.progressFill {
+  position: absolute;
+  height: 100%;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressText {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.progressLabel {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.statusDetails {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eaeaea;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detailLabel {
+  font-size: 0.875rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detailValue {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #000;
+}
+
+@media (max-width: 640px) {
+  .statusDetails {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .statusHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .statusIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .statusInfo h3 {
+    font-size: 1.25rem;
+  }
+  
+  .location {
+    font-size: 1rem;
+  }
+}
+
+.newProgressContainer {
+  margin: 32px 0 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.progressTrack {
+  display: flex;
+  width: 100%;
+  max-width: 480px;
+  height: 18px;
+  background: #eaeaea;
+  border-radius: 12px;
+  overflow: visible;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.progressSegment {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-right: 2px;
+  background: transparent;
+  border-radius: 12px 0 0 12px;
+  overflow: visible;
+}
+.progressSegment:last-child {
+  margin-right: 0;
+  border-radius: 0 12px 12px 0;
+}
+
+.segmentFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 12px;
+  z-index: 1;
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+
+.segmentNumber {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  background: #fff;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border: 2px solid #eaeaea;
+}
+
+.activeSegment .segmentNumber,
+.currentSegment .segmentNumber {
+  color: #fff;
+  background: #0070f3;
+  border-color: #0070f3;
+}
+
+.currentSegment .segmentNumber {
+  background: #fff;
+  color: #0070f3;
+  border: 2px solid #0070f3;
+}
+
+.progressPercentageText {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #222;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 600px) {
+  .progressTrack {
+    max-width: 98vw;
+    height: 14px;
+  }
+  .segmentNumber {
+    font-size: 0.9rem;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.currentStatusCard {
+  margin-top: 2rem;
+  padding: 2rem 1.5rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.10);
+  border: 1px solid #eaeaea;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.statusCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 2rem;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.statusCardTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.statusCardDetails {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.statusCardRow {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.08rem;
+  color: #444;
+}
+
+.statusCardIcon {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+.statusCardText {
+  font-size: 1.08rem;
+  font-weight: 500;
+  color: #222;
+}
+
+@media (max-width: 600px) {
+  .currentStatusCard {
+    padding: 1.2rem 0.5rem;
+    max-width: 98vw;
+  }
+  .statusBadge {
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+  }
+  .statusCardTitle {
+    font-size: 1.1rem;
+  }
+  .statusCardRow, .statusCardText {
+    font-size: 0.98rem;
+  }
 } 

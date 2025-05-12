@@ -118,90 +118,91 @@ export default function Track() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Head>
         <title>Tracking Package - {trackingId}</title>
       </Head>
-      
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
+        {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6"
         >
           <div>
-            <h1 className="text-5xl font-light tracking-tight mb-4">
-              Package Tracking
-            </h1>
-            <p className="text-gray-600 tracking-wide">Tracking ID: {trackingId}</p>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 text-gray-900">Package Tracking</h1>
+            <p className="text-gray-500 tracking-wide text-lg">Tracking ID: <span className="font-mono text-gray-700">{trackingId}</span></p>
           </div>
           <button 
             onClick={() => router.push('/')} 
-            className="btn btn-secondary"
+            className="btn btn-secondary px-6 py-3 rounded-lg shadow hover:shadow-md transition-all text-base font-semibold"
           >
             Track Another Package
           </button>
         </motion.div>
 
+        {/* Main Content Grid */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14"
         >
-          <div className="card border border-black">
-            <h2 className="text-2xl font-light mb-8">Current Status</h2>
-            <div className="flex flex-col items-center">
-              <PackageAnimation 
-                status={trackingData.status} 
-                history={trackingData.history} 
-              />
-              <div className="mt-8 text-center">
-                <p className="text-2xl font-light mb-4">{trackingData.status}</p>
-                <p className="text-gray-600 mb-4 tracking-wide">Location: {trackingData.location}</p>
-                <p className="text-gray-600 tracking-wide">Last Updated: {trackingData.history[0].date}</p>
-              </div>
+          {/* Current Status Card */}
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8 flex flex-col items-center">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Current Status</h2>
+            <PackageAnimation 
+              status={trackingData.status} 
+              history={trackingData.history}
+            />
+            <div className="mt-8 text-center w-full">
+              <p className="text-2xl font-semibold mb-2 text-gray-900">{trackingData.status}</p>
+              <p className="text-gray-500 mb-2 tracking-wide">Location: <span className="font-medium text-gray-700">{trackingData.location}</span></p>
+              <p className="text-gray-400 tracking-wide text-sm">Last Updated: {new Date(trackingData.history[0].date).toLocaleString()}</p>
             </div>
           </div>
 
-          <div className="card border border-black">
-            <h2 className="text-2xl font-light mb-8">Package Journey</h2>
+          {/* Package Journey Card */}
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8 flex flex-col">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Package Journey</h2>
             <TrackingMap history={[...trackingData.history].reverse()} />
           </div>
         </motion.div>
 
+        {/* Timeline Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-12"
+          className="mt-14"
         >
-          <div className="card border border-black">
-            <h2 className="text-2xl font-light mb-8">Tracking Timeline</h2>
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Tracking Timeline</h2>
             <TrackingTimeline history={[...trackingData.history].reverse()} />
           </div>
         </motion.div>
 
+        {/* Detailed History Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="mt-12"
+          className="mt-14"
         >
-          <div className="card border border-black">
-            <h2 className="text-2xl font-light mb-8">Detailed History</h2>
-            <div className="space-y-6">
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Detailed History</h2>
+            <div className="divide-y divide-gray-100">
               {[...trackingData.history].reverse().map((entry, index) => (
                 <div 
                   key={index} 
-                  className="flex items-center justify-between p-6 border border-gray-200 hover:border-black transition-colors duration-200"
+                  className="flex flex-col md:flex-row md:items-center justify-between py-6 gap-2 hover:bg-gray-50 transition-colors duration-200"
                 >
                   <div className="flex-1">
-                    <p className="text-xl font-light mb-2">{entry.status}</p>
-                    <p className="text-gray-600 tracking-wide">{entry.location}</p>
+                    <p className="text-lg font-medium text-gray-900 mb-1">{entry.status}</p>
+                    <p className="text-gray-500 tracking-wide">{entry.location}</p>
                   </div>
-                  <div className="text-gray-600 tracking-wide">
-                    {entry.date}
+                  <div className="text-gray-400 tracking-wide text-sm md:text-right">
+                    {new Date(entry.date).toLocaleString()}
                   </div>
                 </div>
               ))}

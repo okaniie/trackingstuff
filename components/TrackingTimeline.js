@@ -4,16 +4,21 @@ import styles from '../styles/TrackingTimeline.module.css';
 const getStatusColor = (status) => {
   const normalizedStatus = status.toLowerCase().trim();
   
-  if (normalizedStatus.includes('delivered')) {
-    return '#22c55e'; // Green
-  } else if (normalizedStatus.includes('in transit')) {
-    return '#0070f3'; // Blue
-  } else if (normalizedStatus.includes('processing')) {
-    return '#f59e0b'; // Orange
-  } else if (normalizedStatus.includes('out for delivery')) {
-    return '#8b5cf6'; // Purple
-  } else {
-    return '#6b7280'; // Gray
+  switch (normalizedStatus) {
+    case 'delivered':
+      return '#22c55e'; // Green
+    case 'out for delivery':
+      return '#8b5cf6'; // Purple
+    case 'in transit':
+      return '#0070f3'; // Blue
+    case 'processing':
+      return '#f59e0b'; // Orange
+    case 'package received':
+      return '#6b7280'; // Gray
+    case 'exception':
+      return '#ef4444'; // Red
+    default:
+      return '#6b7280'; // Gray
   }
 };
 

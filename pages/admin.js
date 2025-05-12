@@ -24,8 +24,11 @@ export default function Admin() {
 
   const statusOptions = [
     'Package Received',
+    'Processing',
     'In Transit',
-    'Delivered'
+    'Out for Delivery',
+    'Delivered',
+    'Exception'
   ];
 
   const generateTrackingId = () => {
@@ -232,10 +235,11 @@ export default function Admin() {
                 onChange={(e) => setUpdateData({ ...updateData, status: e.target.value })}
                 required
               >
-                <option value="Package Received">Package Received</option>
-                <option value="In Transit">In Transit</option>
-                <option value="Out for Delivery">Out for Delivery</option>
-                <option value="Delivered">Delivered</option>
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
               </select>
             </div>
 

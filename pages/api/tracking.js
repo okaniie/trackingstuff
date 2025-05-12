@@ -1,80 +1,55 @@
-import fs from 'fs';
-import path from 'path';
+import connectDB from '../../lib/mongodb';
+import Tracking from '../../models/Tracking';
 
-const trackingDataPath = path.join(process.cwd(), 'data', 'tracking.json');
+export default async function handler(req, res) {
+  await connectDB();
 
-export default function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      // Read existing data
-      const data = JSON.parse(fs.readFileSync(trackingDataPath, 'utf8'));
-      
-      // Add new tracking entry
-      data.trackingData.push(req.body);
-      
-      // Write back to file
-      fs.writeFileSync(trackingDataPath, JSON.stringify(data, null, 2));
-      
-      res.status(200).json({ success: true });
+      const tracking = await Tracking.create(req.body);
+      res.status(200).json(tracking);
     } catch (error) {
       res.status(500).json({ error: 'Failed to save tracking data' });
     }
   } else if (req.method === 'GET') {
     try {
-      // Read tracking data
-      const data = JSON.parse(fs.readFileSync(trackingDataPath, 'utf8'));
-      
-      // If trackingId is provided, return specific tracking info
       if (req.query.trackingId) {
-        const trackingInfo = data.trackingData.find(
-          item => item.trackingId === req.query.trackingId
-        );
-        
-        if (trackingInfo) {
-          res.status(200).json(trackingInfo);
+        const tracking = await Tracking.findOne({ trackingId: req.query.trackingId });
+        if (tracking) {
+          res.status(200).json(tracking);
         } else {
           res.status(404).json({ error: 'Tracking ID not found' });
         }
       } else {
-        res.status(200).json(data);
+        const trackings = await Tracking.find({});
+        res.status(200).json({ trackingData: trackings });
       }
     } catch (error) {
       res.status(500).json({ error: 'Failed to read tracking data' });
     }
   } else if (req.method === 'PUT') {
     try {
-      // Read existing data
-      const data = JSON.parse(fs.readFileSync(trackingDataPath, 'utf8'));
+      const tracking = await Tracking.findOne({ trackingId: req.body.trackingId });
       
-      // Find the tracking entry to update
-      const index = data.trackingData.findIndex(
-        item => item.trackingId === req.body.trackingId
-      );
-      
-      if (index === -1) {
+      if (!tracking) {
         res.status(404).json({ error: 'Tracking ID not found' });
         return;
       }
 
       // Add new history entry
       const newHistoryEntry = {
-        date: new Date().toISOString().split('T')[0],
+        date: new Date(),
         status: req.body.status,
         location: req.body.location
       };
 
       // Update the tracking entry
-      data.trackingData[index] = {
-        ...data.trackingData[index],
-        status: req.body.status,
-        location: req.body.location,
-        history: [...data.trackingData[index].history, newHistoryEntry]
-      };
+      tracking.status = req.body.status;
+      tracking.location = req.body.location;
+      tracking.history.push(newHistoryEntry);
       
-      // Write back to file
-      fs.writeFileSync(trackingDataPath, JSON.stringify(data, null, 2));
-      
-      res.status(200).json({ success: true });
+      await tracking.save();
+      res.status(200).json(tracking);
     } catch (error) {
       res.status(500).json({ error: 'Failed to update tracking data' });
     }
