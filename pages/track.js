@@ -19,15 +19,44 @@ export default function Track() {
     const fetchTrackingData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/tracking?trackingId=${trackingId}`);
-        if (!response.ok) {
-          throw new Error('Tracking ID not found');
-        }
-        const data = await response.json();
-        setTrackingData(data);
         setError(null);
+        
+        let retries = 3;
+        let lastError = null;
+
+        while (retries > 0) {
+          try {
+            const response = await fetch(`/api/tracking?trackingId=${trackingId}`, {
+              headers: {
+                'Accept': 'application/json',
+              },
+            });
+            
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.details || 'Failed to fetch tracking data');
+            }
+            
+            const data = await response.json();
+            console.log('Tracking data received:', data);
+            setTrackingData(data);
+            return; // Success, exit the function
+          } catch (err) {
+            lastError = err;
+            retries--;
+            if (retries > 0) {
+              console.log(`Retrying... ${retries} attempts left`);
+              await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
+            }
+          }
+        }
+
+        // If we get here, all retries failed
+        throw lastError;
+
       } catch (err) {
-        setError(err.message);
+        console.error('Error fetching tracking data:', err);
+        setError(err.message || 'Failed to load tracking information');
         setTrackingData(null);
       } finally {
         setLoading(false);

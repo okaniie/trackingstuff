@@ -1,21 +1,31 @@
 import connectDB from '../../lib/mongodb';
 import Tracking from '../../models/Tracking';
+import Cors from 'cors';
+
+// Initialize the cors middleware
+const cors = Cors({
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://veritracker.onrender.com'],
+  allowedHeaders: ['Content-Type', 'Accept', 'Authorization']
+});
+
+// Helper method to wait for a middleware to execute before continuing
+// And to throw an error when an error happens in a middleware
+function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
 
 export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
-
-  // Handle preflight request
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+  // Run the CORS middleware
+  await runMiddleware(req, res, cors);
 
   try {
     await connectDB();

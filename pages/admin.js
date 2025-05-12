@@ -74,36 +74,50 @@ export default function Admin() {
 
       console.log('Submitting tracking data:', newTrackingData);
 
-      // Save to API
-      const response = await fetch('http://localhost:3001/api/tracking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newTrackingData),
-      });
+      // Save to API with retry logic
+      let retries = 3;
+      let lastError = null;
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error response:', errorData);
-        throw new Error(errorData.details || 'Failed to save tracking data');
+      while (retries > 0) {
+        try {
+          const response = await fetch('/api/tracking', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(newTrackingData),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.details || 'Failed to create tracking data');
+          }
+
+          const data = await response.json();
+          setSuccess('Tracking information created successfully!');
+          setGeneratedId(data.trackingId);
+          setFormData({
+            trackingId: '',
+            origin: '',
+            destination: '',
+            status: 'Package Received',
+            location: '',
+            estimatedDelivery: '',
+          });
+          return; // Success, exit the function
+        } catch (err) {
+          lastError = err;
+          retries--;
+          if (retries > 0) {
+            console.log(`Retrying... ${retries} attempts left`);
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
+          }
+        }
       }
 
-      const responseData = await response.json();
-      console.log('Success response:', responseData);
-
-      setGeneratedId(trackingId);
-      setSuccess('Tracking entry created successfully!');
-      
-      // Reset form
-      setFormData({
-        trackingId: '',
-        origin: '',
-        destination: '',
-        status: 'Package Received',
-        location: '',
-        estimatedDelivery: '',
-      });
+      // If we get here, all retries failed
+      throw lastError;
 
     } catch (err) {
       console.error('Error creating tracking:', err);
@@ -117,26 +131,45 @@ export default function Admin() {
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/tracking', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateData),
-      });
+      let retries = 3;
+      let lastError = null;
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error response:', errorData);
-        throw new Error(errorData.details || 'Failed to update tracking data');
+      while (retries > 0) {
+        try {
+          const response = await fetch('/api/tracking', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(updateData),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.details || 'Failed to update tracking data');
+          }
+
+          setSuccess('Tracking information updated successfully!');
+          setUpdateData({
+            trackingId: '',
+            status: 'Package Received',
+            location: '',
+          });
+
+          return; // Success, exit the function
+        } catch (err) {
+          lastError = err;
+          retries--;
+          if (retries > 0) {
+            console.log(`Retrying... ${retries} attempts left`);
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
+          }
+        }
       }
 
-      setSuccess('Tracking information updated successfully!');
-      setUpdateData({
-        trackingId: '',
-        status: 'Package Received',
-        location: '',
-      });
+      // If we get here, all retries failed
+      throw lastError;
 
     } catch (err) {
       console.error('Error updating tracking:', err);
