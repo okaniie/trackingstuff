@@ -44,9 +44,19 @@ export default function Admin() {
       // Generate a new tracking ID if not provided
       const trackingId = formData.trackingId || generateTrackingId();
       
-      // Create initial history entry
+      // Calculate progress based on status
+      const progressMap = {
+        'Package Received': 0,
+        'Processing': 20,
+        'In Transit': 40,
+        'Out for Delivery': 80,
+        'Delivered': 100,
+        'Exception': 0
+      };
+      
+      // Create initial history entry with proper Date object
       const history = [{
-        date: new Date().toISOString().split('T')[0],
+        date: new Date(),
         status: formData.status,
         location: formData.location || formData.origin
       }];
@@ -58,11 +68,14 @@ export default function Admin() {
         status: formData.status,
         location: formData.location || formData.origin,
         estimatedDelivery: formData.estimatedDelivery,
+        progress: progressMap[formData.status],
         history
       };
 
+      console.log('Submitting tracking data:', newTrackingData);
+
       // Save to API
-      const response = await fetch('/api/tracking', {
+      const response = await fetch('http://localhost:3001/api/tracking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,8 +84,13 @@ export default function Admin() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save tracking data');
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        throw new Error(errorData.details || 'Failed to save tracking data');
       }
+
+      const responseData = await response.json();
+      console.log('Success response:', responseData);
 
       setGeneratedId(trackingId);
       setSuccess('Tracking entry created successfully!');
@@ -88,7 +106,8 @@ export default function Admin() {
       });
 
     } catch (err) {
-      setError('Failed to create tracking entry. Please try again.');
+      console.error('Error creating tracking:', err);
+      setError(`Failed to create tracking entry: ${err.message}`);
     }
   };
 
@@ -98,7 +117,7 @@ export default function Admin() {
     setSuccess('');
 
     try {
-      const response = await fetch('/api/tracking', {
+      const response = await fetch('http://localhost:3001/api/tracking', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +126,9 @@ export default function Admin() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update tracking data');
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        throw new Error(errorData.details || 'Failed to update tracking data');
       }
 
       setSuccess('Tracking information updated successfully!');
@@ -118,7 +139,8 @@ export default function Admin() {
       });
 
     } catch (err) {
-      setError('Failed to update tracking information. Please try again.');
+      console.error('Error updating tracking:', err);
+      setError(`Failed to update tracking information: ${err.message}`);
     }
   };
 
