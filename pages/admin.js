@@ -123,152 +123,172 @@ export default function Admin() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Head>
         <title>Admin - Package Tracker</title>
         <meta name="description" content="Admin interface for package tracking" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>Admin Dashboard</h1>
+      <main className="container mx-auto px-4 py-12 max-w-4xl">
+        <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">Admin Dashboard</h1>
         
-        <div className={styles.section}>
-          <h2>Create New Tracking Entry</h2>
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.formGroup}>
-              <label htmlFor="trackingId">Tracking ID (Optional)</label>
-              <input
-                type="text"
-                id="trackingId"
-                value={formData.trackingId}
-                onChange={(e) => setFormData({ ...formData, trackingId: e.target.value })}
-                placeholder="Leave empty to generate"
-              />
+        {/* Create New Tracking Entry Section */}
+        <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8 mb-10">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">Create New Tracking Entry</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="trackingId" className="block text-sm font-medium text-gray-700 mb-1">Tracking ID (Optional)</label>
+                <input
+                  type="text"
+                  id="trackingId"
+                  value={formData.trackingId}
+                  onChange={(e) => setFormData({ ...formData, trackingId: e.target.value })}
+                  placeholder="Leave empty to generate"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="origin" className="block text-sm font-medium text-gray-700 mb-1">Origin</label>
+                <input
+                  type="text"
+                  id="origin"
+                  value={formData.origin}
+                  onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="destination" className="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+                <input
+                  type="text"
+                  id="destination"
+                  value={formData.destination}
+                  onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select
+                  id="status"
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Current Location</label>
+                <input
+                  type="text"
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="estimatedDelivery" className="block text-sm font-medium text-gray-700 mb-1">Estimated Delivery Date</label>
+                <input
+                  type="date"
+                  id="estimatedDelivery"
+                  value={formData.estimatedDelivery}
+                  onChange={(e) => setFormData({ ...formData, estimatedDelivery: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
             </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="origin">Origin</label>
-              <input
-                type="text"
-                id="origin"
-                value={formData.origin}
-                onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
-                required
-              />
+            <div className="flex justify-center">
+              <button type="submit" className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors duration-200 font-semibold">
+                Create Tracking Entry
+              </button>
             </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="destination">Destination</label>
-              <input
-                type="text"
-                id="destination"
-                value={formData.destination}
-                onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="status">Status</label>
-              <select
-                id="status"
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                required
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="location">Current Location</label>
-              <input
-                type="text"
-                id="location"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="estimatedDelivery">Estimated Delivery Date</label>
-              <input
-                type="date"
-                id="estimatedDelivery"
-                value={formData.estimatedDelivery}
-                onChange={(e) => setFormData({ ...formData, estimatedDelivery: e.target.value })}
-                required
-              />
-            </div>
-
-            <button type="submit" className={styles.button}>
-              Create Tracking Entry
-            </button>
           </form>
         </div>
 
-        <div className={styles.section}>
-          <h2>Update Existing Tracking</h2>
-          <form onSubmit={handleUpdate} className={styles.form}>
-            <div className={styles.formGroup}>
-              <label htmlFor="updateTrackingId">Tracking ID</label>
-              <input
-                type="text"
-                id="updateTrackingId"
-                value={updateData.trackingId}
-                onChange={(e) => setUpdateData({ ...updateData, trackingId: e.target.value })}
-                required
-                placeholder="Enter tracking ID to update"
-              />
+        {/* Update Existing Tracking Section */}
+        <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8 mb-10">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">Update Existing Tracking</h2>
+          <form onSubmit={handleUpdate} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label htmlFor="updateTrackingId" className="block text-sm font-medium text-gray-700 mb-1">Tracking ID</label>
+                <input
+                  type="text"
+                  id="updateTrackingId"
+                  value={updateData.trackingId}
+                  onChange={(e) => setUpdateData({ ...updateData, trackingId: e.target.value })}
+                  required
+                  placeholder="Enter tracking ID to update"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="updateStatus" className="block text-sm font-medium text-gray-700 mb-1">New Status</label>
+                <select
+                  id="updateStatus"
+                  value={updateData.status}
+                  onChange={(e) => setUpdateData({ ...updateData, status: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="updateLocation" className="block text-sm font-medium text-gray-700 mb-1">New Location</label>
+                <input
+                  type="text"
+                  id="updateLocation"
+                  value={updateData.location}
+                  onChange={(e) => setUpdateData({ ...updateData, location: e.target.value })}
+                  required
+                  placeholder="Enter new location"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
             </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="updateStatus">New Status</label>
-              <select
-                id="updateStatus"
-                value={updateData.status}
-                onChange={(e) => setUpdateData({ ...updateData, status: e.target.value })}
-                required
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
+            <div className="flex justify-center">
+              <button type="submit" className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors duration-200 font-semibold">
+                Update Tracking
+              </button>
             </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="updateLocation">New Location</label>
-              <input
-                type="text"
-                id="updateLocation"
-                value={updateData.location}
-                onChange={(e) => setUpdateData({ ...updateData, location: e.target.value })}
-                required
-                placeholder="Enter new location"
-              />
-            </div>
-
-            <button type="submit" className={styles.button}>
-              Update Tracking
-            </button>
           </form>
         </div>
 
-        {error && <p className={styles.error}>{error}</p>}
-        {success && <p className={styles.success}>{success}</p>}
+        {/* Messages */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-6 text-center">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4 mb-6 text-center">
+            {success}
+          </div>
+        )}
 
+        {/* Generated ID Display */}
         {generatedId && (
-          <div className={styles.success}>
-            <h2>Tracking Entry Created!</h2>
-            <p>Tracking ID: <strong>{generatedId}</strong></p>
-            <p>Please save this ID to track the package.</p>
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+            <h2 className="text-xl font-semibold text-green-700 mb-2">Tracking Entry Created!</h2>
+            <p className="text-gray-700 mb-1">Tracking ID: <span className="font-mono font-bold">{generatedId}</span></p>
+            <p className="text-gray-600">Please save this ID to track the package.</p>
           </div>
         )}
       </main>
